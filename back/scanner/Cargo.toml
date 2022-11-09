@@ -1,0 +1,13 @@
+[package]
+name = "fedidex_scanner"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+error-chain = "0.12.4"
+reqwest = { version = "0.10.0-alpha.2", features = ["blocking"] }
+scraper = "0.13.0"
+fantoccini = "0.19.3"
+regex = "1.6.0"

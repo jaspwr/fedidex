@@ -1,0 +1,74 @@
+html
+    font-family: "Hind"
+
+a
+    color: #229
+
+.content
+    text-align: center
+
+.heading
+    font-size: 30px
+
+.subheading
+    font-size: 15px
+
+.header
+    margin: 17px
+
+.search
+    border-radius: 0.7em
+    font-size: 22px
+    padding-left: 0.5em
+    padding-top: 3px
+    padding-bottom: 3px
+    border-style: none
+    background-color: #EEE
+
+.label
+    $padding: 5px
+    padding-bottom: $padding
+    padding-top: $padding
+    font-weight: bold
+
+#search-label
+    font-size: 18px
+    padding-right: 10px
+
+.footer
+    margin: 20px
+    text-align: center
+    a
+        $footer-spacing: 25px
+        margin-left: $footer-spacing
+        margin-right: $footer-spacing
+
+.instance-list
+    margin: 20px
+    height: calc(100vh - 230px)
+    overflow-y: scroll
+
+.instance-list-item-container
+    display: grid
+    max-width: 900px
+    margin: auto
+    grid-template-columns: 0.3fr 0.9fr 2.2fr 0.7fr 0.7fr 0.8fr
+    grid-template-rows: 1fr
+    gap: 0px 0px
+    grid-auto-flow: row
+    grid-template-areas: "favicon name description invite-only users type"
+
+.instance-list-item
+    text-align: left
+    .favicon
+        grid-area: favicon
+    .name
+        grid-area: name
+    .description
+        grid-area: description
+    .invite-only
+        grid-area: invite-only
+    .users
+        grid-area: users
+    .type
+        grid-area: type
