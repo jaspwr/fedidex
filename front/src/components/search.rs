@@ -1,38 +1,40 @@
 use yew::prelude::*;
 
-pub struct SearchBox {
-    props: Props,
-}
+use wasm_bindgen::JsCast;
+use wasm_bindgen::UnwrapThrowExt;
+use web_sys::Event;
+use web_sys::HtmlInputElement;
+use web_sys::InputEvent;
 
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     pub value: String,
+    pub on_change: Callback<String>,
 }
 
+fn get_value_from_input_event(e: InputEvent) -> String {
+    let event: Event = e.dyn_into().unwrap_throw();
+    let event_target = event.target().unwrap();
+    let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
+    target.value()
+}
 
+/// Controlled Text Input Component
+#[function_component(SearchBox)]
+pub fn search_box(props: &Props) -> Html {
+    let Props { value, on_change } = props.clone();
 
-impl Component for SearchBox {
-    type Message = ();
-    type Properties = Props;
+    let oninput = Callback::from(move |input_event: InputEvent| {
+        on_change.emit(get_value_from_input_event(input_event));
+    });
 
-
-    fn create(ctx: &Context<Self>) -> Self {
-        Self { props: Props { value: "".to_string()} }
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        true
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        html! {
-            <>
-                <span id="search-label">
-                    {"Search:"}
-                </span>
-                <input type="text" class="search"/>
-            </>
-        }
+    html! {
+        <>
+            <span id="search-label">
+                {"Search:"}
+            </span>
+            <input type="text" class="search" {value} {oninput}/>
+        </>
     }
 }

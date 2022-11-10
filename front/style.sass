@@ -4,6 +4,7 @@ html
 a
     color: #229
 
+
 .content
     text-align: center
 
@@ -15,6 +16,11 @@ a
 
 .header
     margin: 17px
+
+.favicon
+    width: 20px
+    vertical-align: middle
+    margin: auto
 
 .search
     border-radius: 0.7em
@@ -42,6 +48,22 @@ a
         $footer-spacing: 25px
         margin-left: $footer-spacing
         margin-right: $footer-spacing
+
+.openstatus
+    border-radius: 1em
+    color: white
+    font-size: 13px
+    $side-padding: 10px
+    padding-left: $side-padding
+    padding-right: $side-padding
+    padding-top: calc($side-padding / 8)
+    padding-bottom: calc($side-padding / 8)
+    margin-left: 5px
+    margin-right: 5px
+    &.Apply
+        background-color: #d56b85
+    &.Open
+        background-color: #69c069
 
 .instance-list
     margin: 20px
