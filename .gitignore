@@ -1,7 +1,4 @@
 */target/
 */dist/
 */Cargo.lock
-back/*/target/
-back/*/dist/
-back/*/Cargo.lock
 **/*.rs.bk

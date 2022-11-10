@@ -10,17 +10,16 @@ use fantoccini::{Client, Locator};
 use scraper::Html;
 use std::time::SystemTime;
 
-mod instance;
-use instance::*;
+
+use crate::instance::*;
 
 error_chain! {
     foreign_links {
         Io(std::io::Error);
         HttpRequest(reqwest::Error);
     }
+    skip_msg_variant
 }
-
-
 
 fn identify_from_body(body: &String) -> Option<ServerType> {
     if body.contains("Mastodon") { return Some(ServerType::Mastodon); }
@@ -28,22 +27,21 @@ fn identify_from_body(body: &String) -> Option<ServerType> {
     None
 }
 
-fn ping_web_service(address: String) -> Result<()> {
+pub fn ping_web_service(address: String) -> Result<ServiceMeta> {
     let url = format!("https://{}", address);
     let mut res = blocking::get(&url)?;
     if !res.status().is_success() {
-        return Ok(());
+        return Err( Error {0: ErrorKind::__Nonexhaustive {}, 1: error_chain::State::default() });
     }
 
     //TODO: bail if the stream is extreemly long
     let mut body = String::new();
     res.read_to_string(&mut body)?;
     let meta = initial_identify_ping(&url, &body);
-    if meta.is_some() {
-        let serialized = serde_json::to_string(&meta).unwrap();
-        println!("{:?}", serialized);
+    match meta {
+        Some(m) => Ok(m),
+        None => Err( Error {0: ErrorKind::__Nonexhaustive {}, 1: error_chain::State::default() })
     }
-    Ok(())
 }
 
 fn initial_identify_ping (address: &String, body: &String) -> Option<ServiceMeta> {
@@ -112,8 +110,4 @@ fn get_mastodon_meta(address: &String, body: &String, server_type: ServerType) -
 
 fn get_pleroma_meta(address: &String, body: &String, server_type: ServerType) -> Option<ServiceMeta> {
     None
-}
-
-fn main() -> () {
-    ping_web_service(String::from("mastodon.social")).unwrap();
 }

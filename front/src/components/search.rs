@@ -6,7 +6,6 @@ use web_sys::Event;
 use web_sys::HtmlInputElement;
 use web_sys::InputEvent;
 
-
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     pub value: String,
@@ -20,7 +19,6 @@ fn get_value_from_input_event(e: InputEvent) -> String {
     target.value()
 }
 
-/// Controlled Text Input Component
 #[function_component(SearchBox)]
 pub fn search_box(props: &Props) -> Html {
     let Props { value, on_change } = props.clone();
