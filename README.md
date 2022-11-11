@@ -1,5 +1,5 @@
 # fedidex
-Index of the Fediverse from internet scans.
+(Work in progress; doesn't work) Index of the Fediverse from internet scans.
 
 ## Building
 Requirements:

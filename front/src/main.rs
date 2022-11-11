@@ -32,7 +32,7 @@ impl Component for App {
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::NewSearchTerm(_term) => { 
+            Msg::NewSearchTerm(_term) => {
                 self.search_term = _term;
                 true
             }
