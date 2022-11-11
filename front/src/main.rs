@@ -17,7 +17,6 @@ pub struct App {
     instance_list: [String; 3]
 }
 
-use gloo_net::http::Request;
 
 
 impl Component for App {
@@ -42,27 +41,13 @@ impl Component for App {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let on_change = ctx.link().callback(Msg::NewSearchTerm);
-        let instance_list = use_state(|| vec![]);
-        {
-            let instance_list = instance_list.clone();
-            use_effect_with_deps(move |_| {
-                let instance_list = instance_list.clone();
-                wasm_bindgen_futures::spawn_local(async move {
-                    let resp = Request::get(&format!("/search/{}", &self.search_term))
-                        .send()
-                        .await
-                        .unwrap();
-                    instance_list.set(resp.text().await.unwrap().split('\n'));
-                });
-                || ()
-            }, ());
-        }
+
         html! {
             <>
             <div class="content">
                 < Header />
                 < SearchBox value={self.search_term.clone()} {on_change}/>
-                < InstanceList items={instance_list.clone()}/>
+                < InstanceListWrapper query={self.search_term.clone()}/>
             </div>
             < Footer />
             </>

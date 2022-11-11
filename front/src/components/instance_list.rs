@@ -3,7 +3,7 @@ use yew::prelude::*;
 
 #[derive(Properties, Clone, PartialEq, Default)]
 pub struct Props {
-    pub items: [String; 3]
+    pub items: Vec<String>,
 }
 
 #[function_component(InstanceList)]
