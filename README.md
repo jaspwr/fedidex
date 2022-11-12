@@ -1,5 +1,6 @@
-# fedidex
+# [fedidex](https://fedidex.xyz)
 [Work in progress; code still to be revised and refactored] Index of the Fediverse found by crawling.
+
 
 ## Crawling
 Requirements:
