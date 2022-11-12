@@ -22,12 +22,15 @@ const extractLinks = async (domain, browser) => {
         const html = await page.evaluate(() => document.querySelector('*').outerHTML);
         const regex = /(([a-zA-Z0-9]+)(\.)([a-zA-Z0-9_]+)(\.)(([a-zA-Z]{2,})+))|(([a-zA-Z0-9]+)(\.)(([a-zA-Z]{2,})+))/g;
         const matches = html.match(regex);
-        checkQueue.unshift(Array.from(new Set(matches.filter((match) => {
+        checkQueue.unshift(...Array.from(new Set(matches.filter((match) => {
             const spl = match.split('.');
             const tld = spl[spl.length - 1];
             const noSubDomain = spl.length == 2 ? match : spl.slice(1).join('.');
             return !!TLD_LIST[tld] && !EXCLUDED_DOMAINS.includes(match) && !EXCLUDED_DOMAINS.includes(noSubDomain) && !checkedDomains.includes(match) && !checkedDomains.includes(noSubDomain);
         }))));
+        checkQueue.forEach((domain) => {
+            console.log(domain);
+        });
         
         await page.close();
     } catch (e) {
@@ -48,7 +51,7 @@ async function autoScroll(page){
                 totalHeight += distance;
                 counter++;
                 // || totalHeight >= scrollHeight - window.innerHeight
-                if(counter > 400 || (counter > 40 && iscrol === scrollHeight)){
+                if(counter > 50 || (counter > 40 && iscrol === scrollHeight)){
                     clearInterval(timer);
                     resolve();
                 }
@@ -69,6 +72,7 @@ async function autoScroll(page){
         const domain = checkQueue.pop();
         if (checkedDomains.includes(domain)) continue;
         try{
+
             let res = await fetch(`https://${domain}/api/v1/instance`);
             let meta = await res?.text();
             if (!meta) continue;
