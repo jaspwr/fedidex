@@ -8,7 +8,7 @@ pub fn header() -> Html {
                 {"fedidex [alpha]"}
             </div>
             <div class="subheading">
-                {"Directory of instances for Mastodon, Pleroma, ect. found by internet scans."}
+                {"Directory of instances for Mastodon, Pleroma, ect. found by crawlers."}
             </div>
         </div>
 

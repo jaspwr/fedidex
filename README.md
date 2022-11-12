@@ -1,10 +1,21 @@
 # fedidex
-(Work in progress; doesn't work) Index of the Fediverse from internet scans.
+[Work in progress; code still to be revised and refactored] Index of the Fediverse found by crawling.
 
-## Building
+## Crawling
+Requirements:
+* Node/NPM
+```sh
+git clone https://github.com/jaspwr/fedidex
+cd fedidex/crawler
+npm install
+node crawl.js
+```
+
+## Building site and server
 Requirements:
 * Rust/Cargo
 * [Trunk](https://trunkrs.dev/)
+* MSSQL
 ```sh
 git clone https://github.com/jaspwr/fedidex
 cd fedidex/front

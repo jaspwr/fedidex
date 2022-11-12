@@ -2,3 +2,5 @@
 */dist/
 */Cargo.lock
 **/*.rs.bk
+.vscode/
+*/.vscode/
