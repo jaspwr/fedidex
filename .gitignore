@@ -4,3 +4,5 @@
 **/*.rs.bk
 .vscode/
 */.vscode/
+*/*/secret.rs
+back/src/secret.rs
