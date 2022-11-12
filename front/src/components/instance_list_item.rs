@@ -37,7 +37,7 @@ pub fn inst_item_list(props: &Props) -> Html {
                 </span>    
             </div>
             <div class="instance-list-item users">
-                {3}
+                {&meta.users}
             </div>
             <div class="instance-list-item type">
                 {format!("{:#?}",&meta.servertype)}

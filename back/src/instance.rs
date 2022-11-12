@@ -3,7 +3,8 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize, Debug)]
 pub enum ServerType {
     Mastodon,
-    Pleroma
+    Pleroma,
+    Akkoma
 }
 
 #[derive(Serialize, Deserialize, Debug)]

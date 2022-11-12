@@ -74,7 +74,7 @@ a
     display: grid
     max-width: 900px
     margin: auto
-    grid-template-columns: 0.3fr 0.9fr 2.2fr 0.7fr 0.7fr 0.8fr
+    grid-template-columns: 0.3fr 1.1fr 2.2fr 0.7fr 0.5fr 0.8fr
     grid-template-rows: 1fr
     gap: 0px 0px
     grid-auto-flow: row
@@ -94,3 +94,20 @@ a
         grid-area: users
     .type
         grid-area: type
+
+    &.name
+        word-break: break-all
+
+::-webkit-scrollbar
+    width: 10px
+
+::-webkit-scrollbar-track
+    border-radius: 10px
+    background: #f1f1f1
+
+::-webkit-scrollbar-thumb
+    background: #cecece
+    border-radius: 10px
+
+::-webkit-scrollbar-thumb:hover
+    background: #b9b9b9

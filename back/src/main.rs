@@ -8,8 +8,8 @@ use rocket::fairing::{Fairing, Info, Kind};
 use rocket::futures::StreamExt;
 use rocket::http::Header;
 use rocket::{Request, Response};
-mod scanner;
-use scanner::ping_web_service;
+mod pinger;
+use pinger::ping_web_service;
 pub mod instance;
 use tiberius::Row;
 use tiberius::{Client, Config, AuthMethod, error::Error};
@@ -24,13 +24,11 @@ static DB_CLIENT: Lazy<Mutex<Option<Client<Compat<TcpStream>>>>> = Lazy::new(|| 
 
 async fn open_sql_client() -> Result<(), Box<dyn std::error::Error>> {
     let mut config = Config::new();
-
-    let secret = secret::get();
-    config.host(secret.address);
-    config.port(secret.port);
+    config.host(secret::address.clone());
+    config.port(secret::port);
     config.trust_cert();
-    config.authentication(AuthMethod::sql_server(secret.user, secret.password));
-    config.database(secret.database);
+    config.authentication(AuthMethod::sql_server(secret::user.clone(), secret::password.clone()));
+    config.database(secret::database.clone());
     let tcp = TcpStream::connect(config.get_addr()).await?;
     tcp.set_nodelay(true)?;
     let mut client = match Client::connect(config, tcp.compat_write()).await {
@@ -47,21 +45,21 @@ async fn search(query: &str, page: i32) -> String {
     let client = client.as_mut().unwrap();
     // TODO: Sanitize query
     let clean_query = query.replace("'", "&#39;")[1..].to_string();
-    let SQL = format!("SELECT *
-        FROM instances0
+    let sql = format!("SELECT *
+        FROM {}
         WHERE (CHARINDEX('{}', name) > 0 OR CHARINDEX('{}', description) > 0)
-        ORDER BY id ASC;", clean_query, clean_query);
+        ORDER BY users DESC;", secret::table, clean_query, clean_query);
         let mut results = String::new();
 
-        client.simple_query(&SQL).await.unwrap().collect::<Vec<_>>().await.into_iter().for_each(|row| {
+        client.simple_query(&sql).await.unwrap().collect::<Vec<_>>().await.into_iter().for_each(|row| {
             let row = row.unwrap();
             let row = row.as_row();
             if row.is_none() { return; };
             let row = row.unwrap();
             let name = row.get::<&str, &str>("name").unwrap().to_string();
-            let description = row.get::<&str, &str>("description").unwrap().to_string();
+            let description = row.get::<&str, &str>("description").unwrap().to_string().replace("&#39;", "'");
             let address = row.get::<&str, &str>("address").unwrap().to_string();
-            //let users = row.get::<i32, &str>("users").unwrap();
+            let users = row.get::<i32, &str>("users").unwrap() as u32;
             let favicon = row.get::<&str, &str>("favicon").unwrap().to_string();
             let invite_only = row.get::<&str, &str>("invite_only").unwrap() == "true";
             //let last_indexed = row.get::<i64, &str>("last_indexed").unwrap();
@@ -69,6 +67,7 @@ async fn search(query: &str, page: i32) -> String {
             let servertype = match servertype {
                 "Mastodon" => instance::ServerType::Mastodon,
                 "Pleroma" => instance::ServerType::Pleroma,
+                "Akkoma" => instance::ServerType::Akkoma,
                 _ => instance::ServerType::Mastodon
             };
             let instance = instance::ServiceMeta {
@@ -76,8 +75,7 @@ async fn search(query: &str, page: i32) -> String {
                 servertype,
                 name,
                 description,
-                //users: users as u32,
-                users: 4,
+                users: users,
                 favicon,
                 invite_only,
                 //last_indexed: last_indexed as u64
@@ -96,21 +94,36 @@ async fn submit(address: &str) -> String {
     let client = client.as_mut().unwrap();
     match ping_web_service(address.to_string()) {
         Ok(meta) => {
+            let sql = format!("
+                SELECT *
+                FROM {}
+                WHERE address LIKE '{}';",secret::table , meta.address);
+            let known = client.simple_query(&sql).await.unwrap().into_row().await.unwrap().is_some();
+            if known {
+                let sql = format!("
+                    DELETE FROM {}
+                    WHERE address LIKE '{}';", secret::table, meta.address);
+                client.simple_query(sql).await;
+            };
 
-            let SQL = format!("INSERT INTO instances0
-                VALUES ('{}', '{:#?}', '{}', '{}', {}, '{}', '{}', {}, 0);", meta.address, meta.servertype, meta.name, meta.description.replace("'", "&#39;"), meta.users, meta.favicon, meta.invite_only, meta.last_indexed);
-            println!("{}", SQL);
-            match client.simple_query(SQL).await {
+            let sql = format!("
+                INSERT INTO {}
+                VALUES ('{}', '{:#?}', '{}', '{}', {}, '{}', '{}', {}, 0);", secret::table, meta.address, meta.servertype, meta.name, meta.description.replace("'", "&#39;"), meta.users, meta.favicon, meta.invite_only, meta.last_indexed);
+            match client.simple_query(sql).await {
                 Ok(_) => {
-                    "Success".to_string()
+                    //serde_json::to_string(&meta).unwrap()
+                    if known { "updated_known".to_string() } else { "added_unknown".to_string() }
                 }
                 Err(e) => {
                     format!("Error: {}", e)
                 }
             }
-            //serde_json::to_string(&meta).unwrap()
+
+            // serde_json::to_string(&meta).unwrap()
+
+            
         },
-        _ => "No service was found...".to_string()
+        _ => "no_instance_found".to_string()
     }
 }
 
