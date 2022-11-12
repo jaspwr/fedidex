@@ -18,6 +18,10 @@ pub fn inst_item_list(props: &Props) -> Html {
 
     let meta: ServiceMeta = _meta.unwrap();
     let open_status = if meta.invite_only { "Apply" } else { "Open" };
+    let mut desciption = meta.description.clone();
+    if meta.description.len() > 200 {
+        desciption = format!("{}...", &meta.description[..200]);
+    }
     html! {
         <>
             <div class="instance-list-item favicon">
@@ -29,7 +33,7 @@ pub fn inst_item_list(props: &Props) -> Html {
                 </a>
             </div>
             <div class="instance-list-item description">
-                {&meta.description}
+                {desciption}
             </div>
             <div class="instance-list-item invite-only">
                 <span class={format!("openstatus {}", open_status)}>
