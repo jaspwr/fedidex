@@ -1,0 +1,27 @@
+{"/0": "///////////////////////////////////////////////////////",
+ "/1": "//    These instances are excluded from the index    //",
+ "/2": "//          as their main intended purposes          //",
+ "/3": "//              are illegal (not piracy).            //",
+ "/4": "//   If there are more instances that you believe    //",
+ "/5": "//   should be excluded you can submit an issue or   //",
+ "/6": "//           add them here and open a PR.            //",
+ "/7": "///////////////////////////////////////////////////////",
+    "list" : [
+        "childpawn.shop",
+        "eientei.org",
+        "freak.university",
+        "ghetti.monster",
+        "kisslolis.moe",
+        "loli.pizza",
+        "lolison.top",
+        "loliverse.xyz",
+        "nnia.space",
+        "pawoo.net",
+        "pedo.school",
+        "posting.lolicon.rocks",
+        "rapemeat.solutions",
+        "varishangout.net",
+        "youjo.love",
+        "pleroma.freespeech.club"
+    ]
+}

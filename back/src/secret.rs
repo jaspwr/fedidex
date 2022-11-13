@@ -1,6 +1,6 @@
-pub static user: &str = "SA";
-pub static password: &str =  "password";
-pub static address: &str = "localhost";
-pub static port: u16 = 1433;
-pub static database: &str = "fedidex";
-pub static table: &str = "instances";
+pub static USER: &str = "SA";
+pub static PASSWORD: &str = "password";
+pub static ADDRESS: &str = "localhost";
+pub static PORT: u16 = 1433;
+pub static DATABASE: &str = "fedidex";
+pub static TABLE: &str = "instances";

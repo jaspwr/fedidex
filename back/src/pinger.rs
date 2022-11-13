@@ -1,12 +1,7 @@
 use error_chain::error_chain;
-use regex::{Regex, Match};
+use regex::Regex;
 use reqwest::blocking;
-use std::f32::consts::E;
 use std::io::Read;
-use std::ops::Index;
-use std::{fmt, string};
-use std::option;
-use fantoccini::{Client, Locator};
 use scraper::Html;
 use std::time::SystemTime;
 use serde_json::Value;
@@ -135,7 +130,7 @@ fn get_mastodon_meta(address: &String, body: &String, server_type: ServerType) -
     let instance_meta_res = web_req(url).unwrap();
 
     let root: Value = serde_json::from_str(&instance_meta_res).unwrap_or(Value::Null);
-    if(root == Value::Null) {
+    if root == Value::Null {
         return None;
     }
 
@@ -180,27 +175,22 @@ fn get_pleroma_meta(address: &String, body: &String, server_type: ServerType) ->
     let url = format!("{}/api/v1/instance", address);
     let instance_meta_res = web_req(url).unwrap();
     let root: Value = serde_json::from_str(&instance_meta_res).unwrap_or(Value::Null);
-    if(root == Value::Null) {
+    if root == Value::Null {
         return None;
     }
-    let invite_only = root.get("approval_required")?.as_bool()?;
-    let users = root.get("stats")?.get("user_count")?.as_u64()? as u32;
-    let description = root.get("description")?.as_str()?.to_string();
-    let name = extract_domain(address);
-    let favicon = format!("{}/favicon.png", address);
-
     let mut servertype = ServerType::Pleroma;
-    if description.contains("Akkoma") {
+    let description = root.get("description")?.as_str()?.to_string();
+    if description.to_lowercase().contains("akkoma") {
         servertype = ServerType::Akkoma;
     }
     Some(ServiceMeta {
-        name: name,
+        name: extract_domain(address),
         address: address.clone(),
-        description: description,
-        favicon: favicon,
-        users: users,
-        invite_only: invite_only,
-        servertype: servertype,
+        description,
+        favicon: format!("{}/favicon.png", address),
+        users: root.get("stats")?.get("user_count")?.as_u64()? as u32,
+        invite_only: root.get("approval_required")?.as_bool()?,
+        servertype,
         last_indexed: SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs()
     })
 }

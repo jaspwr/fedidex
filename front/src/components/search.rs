@@ -16,6 +16,11 @@ fn get_value_from_input_event(e: InputEvent) -> String {
     let event: Event = e.dyn_into().unwrap_throw();
     let event_target = event.target().unwrap();
     let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
+    let window = web_sys::window().unwrap();
+    let inst = window.document().unwrap().get_element_by_id("instance-list");
+    if inst.is_some() {
+        inst.unwrap().set_scroll_top(0);
+    }
     target.value()
 }
 

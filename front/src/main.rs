@@ -1,7 +1,6 @@
+#![recursion_limit="1000"]
 use yew::prelude::*;
-
-use crate::InstanceList;
-
+use yew_hooks::use_scroll;
 
 pub mod components;
 use crate::components::*;
@@ -14,9 +13,7 @@ pub enum Msg {
 #[derive(Debug, Default)]
 pub struct App {
     search_term: String,
-    instance_list: [String; 3]
 }
-
 
 
 impl Component for App {
@@ -26,7 +23,6 @@ impl Component for App {
     fn create(_ctx: &Context<Self>) -> Self {
         Self { 
             search_term: "".to_string(), 
-            instance_list: ["".to_string(), "".to_string(), "".to_string()]
         }
     }
 
@@ -41,13 +37,20 @@ impl Component for App {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let on_change = ctx.link().callback(Msg::NewSearchTerm);
-
         html! {
             <>
             <div class="content">
                 < Header />
                 < SearchBox value={self.search_term.clone()} {on_change}/>
-                < InstanceListWrapper query={self.search_term.clone()}/>
+                <div class="instance-list-item-container column-labels">
+                    <div class="instance-list-item favicon label"></div>
+                    <div class="instance-list-item name label">{"Domain"}</div>
+                    <div class="instance-list-item description label">{"Description"}</div>
+                    <div class="instance-list-item invite-only label">{"Open"}</div>
+                    <div class="instance-list-item users label">{"Users"}</div>
+                    <div class="instance-list-item type label">{"Platform"}</div>
+                </div>
+                < LazyLoadingList query={ self.search_term.clone() } />
             </div>
             < Footer />
             </>
@@ -57,4 +60,5 @@ impl Component for App {
 
 fn main() -> () {
     yew::start_app::<App>();
+    //yew::Renderer::<App>::new().render();
 }

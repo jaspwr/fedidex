@@ -14,6 +14,10 @@ const extractLinks = async (domain, browser) => {
         return;
     }
     checkedDomains.push(domain);
+    let done = false;
+    const timeout = setTimeout(() => { try { if (!done) page.close() } catch(e) {} }, 10000);
+
+
     const page = await browser.newPage();
     try {
         await page.goto(`https://${domain}`);
@@ -32,10 +36,13 @@ const extractLinks = async (domain, browser) => {
             console.log(domain);
         });
         
+        done = true;
         await page.close();
     } catch (e) {
+        done = true;
         await page.close();
     }
+    clearTimeout(timeout);
 };
 
 async function autoScroll(page){
