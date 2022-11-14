@@ -11,6 +11,8 @@
 - [ ] Record instance's supported languages.
 - [ ] Add options for 'sort by'.
 - [ ] Instance uptime info.
+- [ ] Fix unicode issues.
+- [ ] Dark mode.
 ## Crawling
 Requirements:
 * Node/NPM
