@@ -5,11 +5,13 @@ use rocket::fairing::{Fairing, Info, Kind};
 use rocket::futures::StreamExt;
 use rocket::http::Header;
 use rocket::{Request, Response};
+use serde_json::Value;
 use tiberius::{Client, Config, AuthMethod, error::Error};
 use tokio_util::compat::{TokioAsyncWriteCompatExt, Compat};
 use tokio::net::TcpStream;
 use async_std::sync::Mutex;
 use once_cell::sync::Lazy;
+use std::fs;
 
 mod secret;
 mod pinger;
@@ -32,6 +34,23 @@ async fn open_sql_client() -> Result<(), Box<dyn std::error::Error>> {
         Err(e) => Err(e)?,
     };
     *DB_CLIENT.lock().await = Some(client);
+    // Housekeeping
+    let contents = fs::read_to_string("../shared/blacklist.json")
+        .expect("{}");
+    let blacklist: Value = serde_json::from_str(&contents).unwrap_or(Value::Null);
+    let blacklist = blacklist.get("list").unwrap().as_array().unwrap().iter().map(|x| {
+        x.to_string()
+    });
+    for b in blacklist {
+        let domain = b.as_str();
+        let domain = domain[1..(domain.len()-1)].to_string();
+        let sql = format!("
+            DELETE FROM {}
+            WHERE name LIKE '{}';", secret::TABLE, domain);
+        let mut client = DB_CLIENT.lock().await;
+        let client = client.as_mut().unwrap();
+        let res = client.simple_query(sql).await;
+    }
     Ok(())
 }
 
@@ -47,7 +66,7 @@ async fn search(query: &str, page: i32) -> String {
         WHERE (CHARINDEX('{}', name) > 0 OR CHARINDEX('{}', description) > 0)
         ORDER BY users DESC
         OFFSET {} ROWS
-        FETCH NEXT {} ROW ONLY;", secret::TABLE, clean_query, clean_query, page * AMOUNT_PER_PAGE, AMOUNT_PER_PAGE + 1);
+        FETCH NEXT {} ROW ONLY;", secret::TABLE, clean_query, clean_query, page * AMOUNT_PER_PAGE, AMOUNT_PER_PAGE);
     let mut results = String::new();
     client.simple_query(&sql).await.unwrap().collect::<Vec<_>>().await.into_iter().for_each(|row| {
         let row = row.unwrap();
