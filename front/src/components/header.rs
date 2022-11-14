@@ -11,6 +11,5 @@ pub fn header() -> Html {
                 {"Directory of instances for Mastodon, Pleroma, ect. found by crawlers."}
             </div>
         </div>
-
     }
 }

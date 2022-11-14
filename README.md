@@ -2,10 +2,10 @@
 [Work in progress; code still to be revised and refactored] Index of the Fediverse found by crawling.
 ## TODO
 - [ ] Add support for all major platforms.
-- [ ] Fix UI for mobile.
+- [X] Fix UI for mobile.
 - [ ] Reduce font load time.
 - [ ] Cache instance favicons and serve as data URIs.
-- [ ] Make favicon.
+- [X] Make favicon.
 - [ ] Make crawler more reliable (probably just overhaul entirely).
 - [ ] Add popouts to list items that display full description, last pinged, ect.
 - [ ] Record instance's supported languages.
