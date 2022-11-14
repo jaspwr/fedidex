@@ -1,14 +1,10 @@
 use yew::prelude::*;
 
-use wasm_bindgen::JsCast;
-use wasm_bindgen::UnwrapThrowExt;
-use web_sys::Event;
-use web_sys::HtmlInputElement;
-use web_sys::InputEvent;
 use yew_hooks::use_scroll;
 use yew_hooks::use_size;
 
 use crate::components::InstanceListWrapper;
+use crate::components::TabelLabels;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -26,9 +22,10 @@ pub fn lazy_loading_list(props: &Props) -> Html {
     let page = use_state_eq(|| 0);
     let pre_query_state = use_state_eq(|| "".to_string());
     let list_size = use_size(node_inner.clone());
+    let container_size = use_size(node.clone());
     if (*pending_scroll_up).clone() {
         if scroll.1 < 100 { pending_scroll_up.set(false); } 
-        else { return html! { <> <div class="instance-list" id="instance-list" ref={node}><div class="instance-list-item-container" ref={node_inner}></div></div> </> }; }
+        else { return html! { <> <div class="instance-list" id="instance-list" ref={node}><></><div class="instance-list-item-container" ref={node_inner}></div></div> </> }; }
     }
     if query != *pre_query_state {
         page.set(0);
@@ -44,6 +41,19 @@ pub fn lazy_loading_list(props: &Props) -> Html {
     html! {
         <>
         <div class="instance-list" id="instance-list" ref={node}>
+            {
+                if container_size.0 < 500 {
+                    html! {
+                        <>
+                            <div class="table-labels-mobile">
+                                <TabelLabels/> 
+                            </div>
+                        </>
+                    }
+                } else {
+                    html! { <></> }
+                }
+            }
             <div class="instance-list-item-container" ref={node_inner}>
                 < InstanceListWrapper query={ (*pre_query_state).clone() } page={0}/>
                 {
