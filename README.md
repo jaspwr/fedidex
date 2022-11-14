@@ -39,6 +39,7 @@ cargo run
 Requirements:
 * Rust/Cargo
 * [Trunk](https://trunkrs.dev/)
+
 In `front/src/components/instance_list_wrapper.rs`:
 ```diff
 - let resp = Request::get(&format!("/search/s{}/{}", query page))
