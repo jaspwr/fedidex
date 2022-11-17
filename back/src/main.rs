@@ -112,7 +112,7 @@ async fn submit(address: &str) -> String {
                 let sql = format!("
                     DELETE FROM {}
                     WHERE address LIKE '{}';", secret::TABLE, meta.address);
-                client.simple_query(sql).await;
+                let _ = client.simple_query(sql).await;
             };
             let sql = format!("
                 INSERT INTO {}
@@ -126,7 +126,7 @@ async fn submit(address: &str) -> String {
                 }
             }
         },
-        _ => "no_instance_found".to_string()
+        Err(e) => { println!("{}",e); "no_instance_found".to_string() }
     }
 }
 

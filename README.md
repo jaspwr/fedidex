@@ -2,17 +2,18 @@
 [Work in progress; code still to be revised and refactored] Index of the Fediverse found by crawling.
 ## TODO
 - [ ] Add support for all major platforms.
-- [X] Fix UI for mobile.
+- [ ] Make a proper crawler (probably use rust-headless-chrome).
+- [ ] Fix UI for mobile.
 - [ ] Reduce font load time.
 - [ ] Cache instance favicons and serve as data URIs.
 - [X] Make favicon.
-- [ ] Make crawler more reliable (probably just overhaul entirely).
 - [ ] Add popouts to list items that display full description, last pinged, ect.
 - [ ] Record instance's supported languages.
 - [ ] Add options for 'sort by'.
 - [ ] Instance uptime info.
 - [ ] Fix unicode issues.
 - [ ] Dark mode.
+- [ ] Show map of connections between instances like [fediverse.space](https://www.fediverse.space/).
 ## Crawling
 Requirements:
 * Node/NPM

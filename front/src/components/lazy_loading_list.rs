@@ -43,14 +43,14 @@ pub fn lazy_loading_list(props: &Props) -> Html {
         <>
         <div class="instance-list" id="instance-list" ref={node}>
             <div class="instance-list-item-container" ref={node_inner}>
-                {
-                    if *pre_small {
-                        html! { <TabelLabels/> }
-                    } else {
-                        html! { <></> }
-                    }
-                }
-                //<InstanceListWrapper query={ (*pre_query_state).clone() } page={0}/>
+            // //TODO: Fix crashing with this
+                // {
+                //     if *pre_small {
+                //         html! { <TabelLabels/> }
+                //     } else {
+                //         html! { <></> }
+                //     }
+                // }
                 {
                     for (-1..*page).map(|i| html!{< InstanceListWrapper query={ (*pre_query_state).clone() } page={i + 1}/>})
                 }
