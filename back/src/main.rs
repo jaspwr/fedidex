@@ -15,8 +15,10 @@ use std::fs;
 
 mod secret;
 mod pinger;
-pub mod instance;
 use pinger::ping_web_service;
+
+#[path = "../../shared/instance.rs"]
+pub mod instance;
 
 static DB_CLIENT: Lazy<Mutex<Option<Client<Compat<TcpStream>>>>> = Lazy::new(|| Mutex::new(None));
 

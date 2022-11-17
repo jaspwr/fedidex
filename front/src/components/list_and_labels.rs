@@ -17,7 +17,7 @@ pub fn list_and_labels(props: &Props) -> Html {
         <>
             {
                 if list_size.0 >= 500 {
-                    html! { <TabelLabels/> }
+                    html! { <div class="instance-list-item-container column-labels"><TabelLabels/></div> }
                 } else {
                     html! { <></> }
                 }

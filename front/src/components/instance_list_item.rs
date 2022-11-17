@@ -1,5 +1,6 @@
 use yew::prelude::*;
 use crate::instance::*;
+use crate::pretty_number::PrettyNumber;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
@@ -41,7 +42,7 @@ pub fn inst_item_list(props: &Props) -> Html {
                 </span>    
             </div>
             <div class="instance-list-item users">
-                {&meta.users}
+                <PrettyNumber number={meta.users.clone()} />
             </div>
             <div class="instance-list-item type">
                 {format!("{:#?}",&meta.servertype)}
