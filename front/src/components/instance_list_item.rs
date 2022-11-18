@@ -21,7 +21,11 @@ pub fn inst_item_list(props: &Props) -> Html {
     let open_status = if meta.invite_only { "Apply" } else { "Open" };
     let mut desciption = meta.description.clone();
     if meta.description.len() > 200 {
-        desciption = format!("{}...", &meta.description[..200]);
+        let slice_position = meta.description.char_indices().nth(200);
+        desciption = match slice_position {
+            Some(pos) => format!("{}...", &meta.description[..pos.0]),
+            None => "".to_string()
+        }
     }
     html! {
         <>
